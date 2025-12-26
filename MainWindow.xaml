@@ -1,0 +1,138 @@
+﻿<Window x:Class="DesktopWhiteboard.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowState="Maximized"
+        Topmost="True"
+        ShowInTaskbar="False"
+        KeyDown="Window_KeyDown">
+
+    <Grid>
+
+        <!-- ========================= -->
+        <!-- Ink drawing surface -->
+        <!-- ========================= -->
+        <InkCanvas x:Name="Whiteboard"
+                   Background="Transparent"
+                   EditingMode="Ink"
+                   UseCustomCursor="True" />
+
+        <!-- ========================= -->
+        <!-- Overlay menu (TOP RIGHT) -->
+        <!-- ========================= -->
+        <Border x:Name="OverlayMenu"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="20"
+                Padding="12"
+                CornerRadius="10"
+                Background="#CC1E1E1E"
+                Visibility="Collapsed">
+
+            <StackPanel Width="220">
+
+                <!-- Header -->
+                <TextBlock Text="Desktop Whiteboard"
+                           Foreground="White"
+                           FontSize="16"
+                           FontWeight="SemiBold" />
+
+                <TextBlock Text="Edit mode"
+                           Foreground="#AAAAAA"
+                           FontSize="12"
+                           Margin="0,0,0,12"/>
+
+                <!-- Theme -->
+                <TextBlock Text="Theme"
+                           Foreground="White"
+                           Margin="0,0,0,6"/>
+
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,0,0,12">
+                    <RadioButton Content="Light"
+                                 Foreground="White"
+                                 GroupName="Theme"
+                                 Checked="LightTheme_Checked"/>
+
+                    <RadioButton Content="Dark"
+                                 Foreground="White"
+                                 GroupName="Theme"
+                                 Margin="12,0,0,0"
+                                 Checked="DarkTheme_Checked"/>
+                </StackPanel>
+
+                <!-- Pen color -->
+                <!-- Pen color -->
+                <TextBlock Text="Pen color"
+                        Foreground="White"
+                        Margin="0,0,0,6"/>
+
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,0,0,12">
+
+                    <!-- White ink -->
+                    <Button Width="24" Height="24"
+                            Background="White"
+                            BorderBrush="#777"
+                            BorderThickness="1"
+                            Click="InkColor_Click"
+                            Margin="0,0,6,0"/>
+
+                    <!-- Black ink -->
+                    <Button Width="24" Height="24"
+                            Background="Black"
+                            Click="InkColor_Click"
+                            Margin="0,0,6,0"/>
+
+                    <!-- Red ink -->
+                    <Button Width="24" Height="24"
+                            Background="Red"
+                            Click="InkColor_Click"
+                            Margin="0,0,6,0"/>
+
+                    <!-- Blue ink -->
+                    <Button Width="24" Height="24"
+                            Background="Blue"
+                            Click="InkColor_Click"
+                            Margin="0,0,6,0"/>
+
+                    <!-- Green ink -->
+                    <Button Width="24" Height="24"
+                            Background="Green"
+                            Click="InkColor_Click"/>
+                </StackPanel>
+
+
+                <!-- Pen thickness -->
+                <TextBlock Text="Pen thickness"
+                           Foreground="White"
+                           Margin="0,0,0,6"/>
+
+                <Slider Minimum="1"
+                        Maximum="10"
+                        Value="3"
+                        TickFrequency="1"
+                        IsSnapToTickEnabled="True"
+                        ValueChanged="PenThickness_Changed"
+                        Margin="0,0,0,12"/>
+
+                <!-- Tools -->
+                <TextBlock Text="Tool"
+                           Foreground="White"
+                           Margin="0,0,0,6"/>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="✏ Pen"
+                            Click="Pen_Click"
+                            Margin="0,0,8,0"/>
+                    <Button Content="🧽 Eraser"
+                            Click="Eraser_Click"/>
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</Window>
