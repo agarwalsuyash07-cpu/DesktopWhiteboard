@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Ink;
@@ -385,23 +385,67 @@ namespace DesktopWhiteboard
             UpdateBackground();
             UpdateWallpaperLive();
         }
+        private void SetSolidColorWallpaper(Color color)
+        {
+            int width = (int)SystemParameters.PrimaryScreenWidth;
+            int height = (int)SystemParameters.PrimaryScreenHeight;
+
+            var visual = new DrawingVisual();
+            using (var dc = visual.RenderOpen())
+            {
+                dc.DrawRectangle(
+                    new SolidColorBrush(color),
+                    null,
+                    new Rect(0, 0, width, height));
+            }
+
+            var rtb = new RenderTargetBitmap(
+                width, height, 96, 96, PixelFormats.Pbgra32);
+
+            rtb.Render(visual);
+
+            string path = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "DesktopWhiteboard",
+                "edit_mode_bg.png");
+
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(rtb));
+
+            using (var fs = new FileStream(path, FileMode.Create))
+                encoder.Save(fs);
+
+            // Apply as wallpaper
+            SystemParametersInfo(
+                SPI_SETDESKWALLPAPER,
+                0,
+                path,
+                SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
+        }
+
         private void EnterEditMode()
         {
             isEditMode = true;
+
+            // 🔥 FIX: replace desktop wallpaper with solid color
+            if (currentTheme == CanvasTheme.Light)
+                SetSolidColorWallpaper(Colors.White);
+            else
+                SetSolidColorWallpaper(Color.FromRgb(30, 30, 30)); // neutral gray
 
             Show();
             Activate();
             Focus();
 
             EnableClickThrough(false);
-            ApplyCanvasTheme();
 
-            UpdateBackground();
-            Cursor = Cursors.Pen;
             Whiteboard.IsHitTestVisible = true;
-
+            Cursor = Cursors.Pen;
             OverlayMenu.Visibility = Visibility.Visible;
         }
+
 
 
         private async Task ExitEditModeAsync()
