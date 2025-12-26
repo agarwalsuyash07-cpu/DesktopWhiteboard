@@ -28,7 +28,7 @@
                 Margin="20"
                 Padding="12"
                 CornerRadius="10"
-                Background="#CC1E1E1E"
+                Background="#CC282828"
                 Visibility="Collapsed">
 
             <StackPanel Width="220">
@@ -136,3 +136,4 @@
 
     </Grid>
 </Window>
+
