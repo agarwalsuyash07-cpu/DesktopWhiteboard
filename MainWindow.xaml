@@ -1,0 +1,311 @@
+﻿<Window x:Class="DesktopWhiteboard.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowState="Maximized"
+        Topmost="True"
+        ShowInTaskbar="False"
+        KeyDown="Window_KeyDown">
+        
+
+    <Window.Resources>
+        <Style x:Key="ToolButtonStyle" TargetType="Button">
+                <Setter Property="Height" Value="42"/>
+                <Setter Property="Padding" Value="12,0"/>
+                <Setter Property="FontSize" Value="10"/>
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="Background" Value="#2A2A2A"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="#444"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Storyboard x:Key="FadeInOverlay">
+        <DoubleAnimation
+                Storyboard.TargetProperty="Opacity"
+                From="0" To="1"
+                Duration="0:0:0.2"/>
+        </Storyboard>
+
+        <Storyboard x:Key="FadeOutOverlay">
+        <DoubleAnimation
+                Storyboard.TargetProperty="Opacity"
+                From="1" To="0"
+                Duration="0:0:0.15"/>
+        </Storyboard>
+
+    </Window.Resources>
+    <Grid>
+
+        <!-- ========================= -->
+        <!-- Ink drawing surface -->
+        <!-- ========================= -->
+        <InkCanvas x:Name="Whiteboard"
+                Background="Transparent"
+                EditingMode="Ink"
+                UseCustomCursor="True" />
+        <Canvas x:Name="ImageLayer"
+                IsHitTestVisible="False"/>
+        <Canvas x:Name="TextLayer"
+                Background="Transparent"
+                IsHitTestVisible="False"/>
+        <!-- ========================= -->
+        <!-- Overlay menu (TOP RIGHT) -->
+        <!-- ========================= -->
+        <Border x:Name="OverlayMenu"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="20"
+                Padding="12"
+                CornerRadius="10"
+                Background="#CC282828"
+                Visibility="Collapsed">
+
+            <StackPanel Width="220">
+
+                <!-- Header -->
+                <TextBlock Text="Desktop Whiteboard"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+
+                <TextBlock Text="Edit mode"
+                        Foreground="#AAAAAA"
+                        FontSize="12"
+                        Margin="0,0,0,12"/>
+
+                <!-- Theme -->
+                <TextBlock Text="Theme"
+                        Foreground="White"
+                        Margin="0,0,0,6"/>
+
+                <StackPanel Orientation="Horizontal"
+                        Margin="0,0,0,12">
+                    <RadioButton Content="Light"
+                                 Foreground="White"
+                                 GroupName="Theme"
+                                 Checked="LightTheme_Checked"/>
+
+                    <RadioButton Content="Dark"
+                                 Foreground="White"
+                                 GroupName="Theme"
+                                 Margin="12,0,0,0"
+                                 Checked="DarkTheme_Checked"/>
+                </StackPanel>
+                <!-- Pen color -->
+                <TextBlock Text="Pen color"
+                        Foreground="White"
+                        Margin="0,0,0,6"/>
+
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,0,0,12">
+
+                    <!-- White ink -->
+                    <Button Width="24" Height="24"
+                            Background="White"
+                            BorderBrush="#777"
+                            BorderThickness="1"
+                            Click="InkColor_Click"
+                            Margin="0,0,6,0"/>
+
+                    <!-- Black ink -->
+                    <Button Width="24" Height="24"
+                            Background="Black"
+                            Click="InkColor_Click"
+                            Margin="0,0,6,0"/>
+
+                    <!-- Red ink -->
+                    <Button Width="24" Height="24"
+                            Background="Red"
+                            Click="InkColor_Click"
+                            Margin="0,0,6,0"/>
+
+                    <!-- Blue ink -->
+                    <Button Width="24" Height="24"
+                            Background="Blue"
+                            Click="InkColor_Click"
+                            Margin="0,0,6,0"/>
+
+                    <!-- Green ink -->
+                    <Button Width="24" Height="24"
+                            Background="Green"
+                            Click="InkColor_Click"
+                            Margin="0,0,6,0"/>
+                     <!-- Yellow ink -->
+                    <Button Width="24" Height="24"
+                            Background="Yellow"
+                            Click="InkColor_Click"/>
+                </StackPanel>
+
+
+                <!-- Pen thickness -->
+                <TextBlock Text="Pen thickness"
+                        Foreground="White"
+                        Margin="0,0,0,6"/>
+
+                <Slider Minimum="1"
+                        Maximum="10"
+                        Value="3"
+                        TickFrequency="1"
+                        IsSnapToTickEnabled="True"
+                        ValueChanged="PenThickness_Changed"
+                        Margin="0,0,0,12"/>
+                <TextBlock Text="Text size"
+                        Foreground="White"
+                        Margin="0,10,0,4"/>
+
+                <Slider Minimum="10"
+                        Maximum="72"
+                        Value="24"
+                        TickFrequency="2"
+                        IsSnapToTickEnabled="True"
+                        ValueChanged="TextSize_Changed"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <ToggleButton x:Name="BoldButton"
+                                Width="32"
+                                Height="32"
+                                Click="Bold_Click">
+                        <TextBlock Text="B"
+                                FontWeight="Bold"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                        </ToggleButton>
+                        <ToggleButton x:Name="ItalicButton"
+                                Width="32"
+                                Height="32"
+                                Click="Italic_Click">
+                        <TextBlock Text="I"
+                                FontStyle="Italic"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                        </ToggleButton>
+                        <ToggleButton x:Name="UnderlineButton"
+                                Width="32"
+                                Height="32"
+                                Click="Underline_Click">
+                        <TextBlock Text="U"
+                                FontWeight="Bold"
+                                TextDecorations="Underline"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                        </ToggleButton>
+
+                </StackPanel>
+
+                <!-- Tools -->
+                <TextBlock Text="toolPanel"
+                        Foreground="White"
+                        Margin="0,0,0,6"/>
+
+                <!-- Row 1: Pen / Eraser / Clear -->
+                <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="PenButton"
+                        Grid.Column="0"
+                        Content="✏ Pen"
+                        Style="{StaticResource ToolButtonStyle}"
+                        Height="34"
+                        Margin="0,0,6,0"
+                        Click="Pen_Click"/>
+
+                <Button x:Name="EraserButton"
+                        Grid.Column="1"
+                        Content="🧽 Eraser"
+                        Style="{StaticResource ToolButtonStyle}"
+                        Height="34"
+                        Margin="0,0,6,0"
+                        Click="Eraser_Click"/>
+
+                <Button x:Name="ClearButton"
+                        Style="{StaticResource ToolButtonStyle}"
+                        Grid.Column="2"
+                        Content="🗑 Clear"
+                        Height="34"
+                        Click="Clear_Click"/>
+                </Grid>
+
+                <!-- Row 2: Highlighter -->
+                <Button x:Name="HighlighterButton"
+                        Content="🖍 Highlighter"
+                        Style="{StaticResource ToolButtonStyle}"
+                        Height="34"
+                        HorizontalAlignment="Stretch"
+                        Click="Highlighter_Click"/>
+                <Button x:Name="TextButton"
+                        Content="✏ Text"
+                        Style="{StaticResource ToolButtonStyle}"
+                        Click="Text_Click"
+                        Height="36"
+                        Margin="0,8,0,0"/>
+
+            </StackPanel>
+        </Border>
+        <!-- ========================= -->
+        <!-- Keyboard Shortcuts Overlay -->
+        <!-- ========================= -->
+        <Border x:Name="HelpOverlay"
+                Opacity="0"
+                IsHitTestVisible="False"
+                Background="#CC282828"
+                CornerRadius="10"
+                Padding="12"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="20">
+
+        <Border Width="420"
+                Padding="20"
+                CornerRadius="12"
+                Background="#2A2A2A"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+
+                <StackPanel>
+
+                <TextBlock Text="Desktop Whiteboard"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="White"/>
+
+                <TextBlock Text="Keyboard Shortcuts"
+                        Margin="0,4,0,16"
+                        Foreground="#BBBBBB"/>
+
+                <!-- Shortcut list -->
+                <StackPanel>
+
+                        <TextBlock Text="Ctrl + Alt + W  →  Enter / Exit edit mode"/>
+                        <TextBlock Text="Esc              →  Exit edit mode"/>
+                        <TextBlock Text="Ctrl + Z          →  Undo"/>
+                        <TextBlock Text="Ctrl + Y          →  Redo"/>
+                        <TextBlock Text="E                →  Eraser tool"/>
+                        <TextBlock Text="I                →  Pen tool"/>
+                        <TextBlock Text="T                →  Text tool"/>
+                        <TextBlock Text="Ctrl + Shift + C  →  Clear board"/>
+
+                </StackPanel>
+
+                <TextBlock Text="Tip: Press F1 to view these shortcuts again."
+                        Margin="0,14,0,16"
+                        Foreground="#AAAAAA"
+                        TextWrapping="Wrap"/>
+
+                <Button Content="Got it"
+                        Height="32"
+                        Click="CloseHelpOverlay"/>
+
+                </StackPanel>
+
+        </Border>
+        </Border>
+    </Grid>
+</Window>
